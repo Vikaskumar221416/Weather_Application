@@ -23,6 +23,7 @@ gitHub.addEventListener("click", () => {
 let cityNamesList = JSON.parse(localStorage.getItem("cityNamesList")) || [];
 
 // Toggle the visibility of the input field based on the selected radio button:-
+// radio button input field display show and hide input box based on the radio button radiocity will be show input and radiocurrentlocation hide the input
 const toggle_city = () => {
     if (radioCity.checked) {
         cityInput.style.display = "block";
@@ -30,14 +31,19 @@ const toggle_city = () => {
         cityInput.style.display = "none";
     }
 };
-
+// Runs the function once initially.
+//Updates the input field visibility every time the radio button changes.
 toggle_city();
 radioCity.addEventListener("change", toggle_city);
 radioCurrentLocation.addEventListener("change", toggle_city);
 
 // toggling the dropdown menu:-
+// When the user types or changes something in the input box (with id city_input), run this function.”
+// It runs every time the user types a letter, deletes, or pastes something.
+// Here we use a callback function inside the callback function code run automatically when input event occur.
 cityInput.addEventListener("input", () => {
-    const inputValue = cityInput.value.trim().toLowerCase();
+
+const inputValue = cityInput.value.trim().toLowerCase();
 
     // Filter cities that match the input
     const filteredCities = cityNamesList.filter((city) =>
@@ -76,7 +82,7 @@ document.addEventListener("click", (e) => {
 const getWeatherByCityName = async (city = "bareilly") => {
     try {
         const response = await fetch(
-            `http://api.weatherapi.com/v1/forecast.json?key=7df05d21f7544cdfaa991117252004&q=${city}&days=7&aqi=no&alerts=no`
+            `http://api.weatherapi.com/v1/forecast.json?key=9e304cf692fb4b09b3b63506252205&q=${city}&days=7&aqi=no&alerts=no`
         );
         const data = await response.json();
         // Updating the current weather data:-
@@ -115,7 +121,7 @@ getWeatherByCityName(); // Fetching the weather data for the default city:-
 // Fetching the weather data from the API using the current_location:-
 const getWeatherByCurrentLocation = async (latitude, longitude) => {
     try {
-        const response = await fetch(`http://api.weatherapi.com/v1/forecast.json?key=7df05d21f7544cdfaa991117252004&q=${latitude},${longitude}&days=7&aqi=no&alerts=no`);
+        const response = await fetch(`http://api.weatherapi.com/v1/forecast.json?key=9e304cf692fb4b09b3b63506252205&q=${latitude},${longitude}&days=7&aqi=no&alerts=no`);
         const data = await response.json();
         console.log(data);
 
