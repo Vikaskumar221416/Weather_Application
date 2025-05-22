@@ -79,6 +79,9 @@ document.addEventListener("click", (e) => {
 });
 
 // Fetching the weather data from the API using the city name:-
+// declere an asynchronous function.
+// It takes one parameter
+// async allows us to use await inside this function to handle promises.
 const getWeatherByCityName = async (city = "bareilly") => {
     try {
         const response = await fetch(
@@ -86,6 +89,7 @@ const getWeatherByCityName = async (city = "bareilly") => {
         );
         const data = await response.json();
         // Updating the current weather data:-
+        // indexOf function is used here to find the first space of the wholedate time and it gives only dates not times.
         const whiteSpace_index = data.location.localtime.indexOf(" ");
         cityName.innerHTML = `${data.location.name} (${data.location.localtime.slice(
             0,
@@ -100,7 +104,7 @@ const getWeatherByCityName = async (city = "bareilly") => {
 
         // Updating the forecast data:-
         cardContainer.innerHTML = ""; // Clearing the previous forecast data:-
-        data.forecast.forecastday.slice(0,5).forEach((item) => {
+        data.forecast.forecastday.map((item) => {
             return (
                 cardContainer.innerHTML += `<div class="w-full flex flex-col items-center justify-center gap-1 bg-slate-200 text-slate-900 rounded-lg py-2 px-4 shadow-lg shadow-black">
                         <h4 class="font-bold">(${item.date})</h4>
@@ -123,8 +127,6 @@ const getWeatherByCurrentLocation = async (latitude, longitude) => {
     try {
         const response = await fetch(`http://api.weatherapi.com/v1/forecast.json?key=9e304cf692fb4b09b3b63506252205&q=${latitude},${longitude}&days=7&aqi=no&alerts=no`);
         const data = await response.json();
-        console.log(data);
-
         // Updating the current weather data:-
         const whiteSpace_index = data.location.localtime.indexOf(" ");
         cityName.innerHTML = `${data.location.name} (${data.location.localtime.slice(
@@ -140,14 +142,14 @@ const getWeatherByCurrentLocation = async (latitude, longitude) => {
 
         // Updating the forecast data:-
         cardContainer.innerHTML = ""; // Clearing the previous forecast data:-
-        data.forecast.forecastday.slice(0,5).forEach((item) => {
+        data.forecast.forecastday.map((item) => {
             return (
                 cardContainer.innerHTML += `<div class="w-full flex flex-col items-center justify-center gap-1 bg-slate-200 text-slate-900 rounded-lg py-2 px-4 shadow-lg shadow-black">
                         <h4 class="font-bold">(${item.date})</h4>
                         <img src="https:${item.day.condition.icon}" alt="${item.day.condition.text}" width="70" height="70" />
-                        <p class="self-start font-semibold">Temp:<span class="text-sm ml-1 font-normal">${item.day.avgtemp_c}<sup>o</sup> C</span></p>
-                        <p class="self-start font-semibold">Wind:<span class="text-sm ml-1 font-normal">${item.day.maxwind_kph} kph</span></p>
-                        <p class="self-start font-semibold">Humidity:<span class="text-sm ml-1 font-normal">${item.day.avghumidity}%</span></p>
+                        <p class="self-start font-semibold">Avg Temp:<span class="text-sm ml-1 font-normal">${item.day.avgtemp_c}<sup>o</sup> C</span></p>
+                        <p class="self-start font-semibold"> Avg Wind:<span class="text-sm ml-1 font-normal">${item.day.maxwind_kph} kph</span></p>
+                        <p class="self-start font-semibold"> Avg Humidity:<span class="text-sm ml-1 font-normal">${item.day.avghumidity}%</span></p>
                     </div>`);
         });
 
@@ -173,12 +175,16 @@ searchButton.addEventListener("click", (e) => {
         // Storing the only city names which are not present in dropdown menu:-
         if (!cityNamesList.includes(cityName)) {
             cityNamesList.push(cityName);
+            //  Saves the updated city list to localStorage, as a JSON string.
             localStorage.setItem("cityNamesList", JSON.stringify(cityNamesList));
         }
+        // call the function for fetch data
         getWeatherByCityName(cityName);
+        // else is run if currrent location radio button is selected
     } else {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((position) => {
+                // Extracts the latitude and longitude from the position object returned by the browser
                 const latitude = position.coords.latitude;
                 const longitude = position.coords.longitude;
                 getWeatherByCurrentLocation(latitude, longitude);
